@@ -676,27 +676,21 @@ void tambahDataPelanggan(){
     system("pause");
 }
 
-void hitungTotalHarga(pelanggan &p){
-    int total = 0; // Inisialisasi variabel total harga pesanan pelanggan dengan nilai 0
-    
-    // Loop sebanyak jumlah pesanan yang dimiliki pelanggan p
-    for (int i = 0; i < p.jumlahPesanan; ++i)
-    {
-        // idMenuIndex adalah indeks dari menu dalam array daftarMenu,
-        // didapat dengan mengurangi 1 dari ID menu yang dipesan karena ID biasanya mulai dari 1,
-        // sedangkan indeks array mulai dari 0
-        int idMenuIndex = p.pesanan[i] - 1;
+int hitungharga(pelanggan &p, int index = 0) {
+    if (index == p.jumlahPesanan) return 0;
 
-        // Validasi indeks agar tidak out of bounds pada array daftarMenu
-        if (idMenuIndex >= 0 && idMenuIndex < jumlahMenu)
-        {
-            // Hitung total harga dengan mengalikan harga menu dengan jumlah pesanan untuk menu tersebut
-            total += daftarMenu[idMenuIndex].harga * p.jumlahMenu[i];
-        }
+    int idMenuIndex = p.pesanan[index] - 1;
+    if (idMenuIndex >= 0 && idMenuIndex < jumlahMenu) {
+        return daftarMenu[idMenuIndex].harga * p.jumlahMenu[index] +
+               hitungharga(p, index + 1);
+    } else {
+        return hitungharga(p, index + 1);
     }
+}
 
-    // Simpan total harga yang sudah dihitung ke atribut totalHarga pelanggan p
-    p.totalHarga = total;
+void hitungTotalHarga(pelanggan &p){
+    p.totalHarga = hitungharga(p);
+
 }
 
 void hapusdatamenu() {
@@ -1923,5 +1917,6 @@ void menuEditPelanggan() {
 
     cout << "\nData pelanggan berhasil diperbarui.\n";
     cout << "Tekan tombol apapun untuk kembali ke menu utama...";
+ 
     system("pause > nul");
 }
